@@ -51,6 +51,9 @@ export default defineNuxtConfig({
     options: {
       theme: {
         preset: CharaTheme,
+        options: {
+          darkModeSelector: ".fake-dark-selector",
+        },
       },
     },
     autoImport: true,
