@@ -46,7 +46,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@primevue/nuxt-module"],
+  modules: ["@primevue/nuxt-module", "@nuxt/icon"],
   primevue: {
     options: {
       theme: {
