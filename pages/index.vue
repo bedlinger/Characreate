@@ -273,8 +273,8 @@ const userPrompt = computed(() => {
 const createPersona = async () => {
   if (hasError.value) {
     toast.add({
-      severity: "error",
-      summary: "Error",
+      severity: "warn",
+      summary: "Warning",
       detail: "Please fill in all required fields",
       life: 3000,
     });
@@ -307,7 +307,13 @@ const createPersona = async () => {
     },
     async onRequestError({ request, options, error }) {
       // console.log("[fetch request error]", request, error);
-      loading.value = false;
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to generate persona! Please try again.",
+        life: 3000,
+      });
+      return;
     },
     async onResponse({ request, response, options }) {
       // console.log("[fetch response]", request, response.status, response.body);
@@ -315,7 +321,7 @@ const createPersona = async () => {
         toast.add({
           severity: "error",
           summary: "Error",
-          detail: `Failed to generate persona with an response status of ${response.status}`,
+          detail: `Failed to generate persona with an response status of ${response.status}! Please try again.`,
           life: 3000,
         });
         return;
