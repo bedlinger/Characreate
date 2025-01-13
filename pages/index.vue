@@ -6,14 +6,18 @@
     </h2>
     <h3 class="text-2xl font-bold">Create your persona</h3>
     <div class="card flex justify-center">
-      <Form @submit="createPersona()" class="flex flex-col gap-9 w-1/3" @keydown.prevent.enter>
+      <Form
+        @submit="createPersona()"
+        class="flex flex-col gap-9 w-1/3"
+        @keydown.prevent.enter
+      >
         <div class="card flex justify-center">
           <div class="flex flex-col w-full">
             <FloatLabel class="w-full flex flex-col">
               <Textarea
                 v-model="projectIdea"
                 name="projectIdea"
-                v-tooltip.rigth="'Describe your project idea'"
+                v-tooltip.right="'Describe your project idea'"
                 rows="5"
                 autoResize
                 :invalid="errorProjectIdea.isError"
@@ -26,8 +30,9 @@
               severity="error"
               size="small"
               variant="simple"
-              >{{ errorProjectIdea.message }}</Message
             >
+              {{ errorProjectIdea.message }}
+            </Message>
           </div>
         </div>
         <div class="card flex justify-center">
@@ -36,7 +41,7 @@
               <Textarea
                 v-model="group"
                 name="group"
-                v-tooltip.rigth="'Describe your target group'"
+                v-tooltip.right="'Describe your target group'"
                 rows="5"
                 autoResize
                 :invalid="errorGroup.isError"
@@ -49,8 +54,9 @@
               severity="error"
               size="small"
               variant="simple"
-              >{{ errorGroup.message }}</Message
             >
+              {{ errorGroup.message }}
+            </Message>
           </div>
         </div>
         <div class="flex flex-row gap-4 w-full justify-evenly">
@@ -60,7 +66,7 @@
                 <InputNumber
                   v-model="age"
                   name="age"
-                  v-tooltip.rigth="'Enter the age of the persona'"
+                  v-tooltip.right="'Enter the age of the persona'"
                   :min="0"
                   :max="100"
                   showButtons
@@ -74,8 +80,9 @@
                 severity="error"
                 size="small"
                 variant="simple"
-                >{{ errorAge.message }}</Message
               >
+                {{ errorAge.message }}
+              </Message>
             </div>
           </div>
           <div class="card flex justify-center w-full">
@@ -84,7 +91,7 @@
                 <Select
                   v-model="gender"
                   name="gender"
-                  v-tooltip.rigth="
+                  v-tooltip.right="
                     'Select the gender of the persona if necessary'
                   "
                   :options="genders"
@@ -98,15 +105,16 @@
                 severity="error"
                 size="small"
                 variant="simple"
-                >{{ errorGender.message }}</Message
               >
+                {{ errorGender.message }}
+              </Message>
             </div>
           </div>
         </div>
         <div class="card flex justify-center">
           <div class="flex flex-col w-full">
             <FloatLabel class="w-full flex flex-col">
-              <InputGroup v-tooltip.rigth="'Add Goals that you want to reach'">
+              <InputGroup v-tooltip.right="'Add Goals that you want to reach'">
                 <InputText
                   v-model="goal"
                   name="goal"
@@ -120,8 +128,9 @@
                     @click="addGoal()"
                     class="w-full h-full"
                     severity="secondary"
-                    ><Icon name="mdi:plus-circle-outline"
-                  /></Button>
+                  >
+                    <Icon name="mdi:plus-circle-outline" />
+                  </Button>
                 </InputGroupAddon>
               </InputGroup>
             </FloatLabel>
@@ -144,7 +153,6 @@
             </div>
           </div>
         </div>
-
         <Button
           type="submit"
           label="Create Persona"
@@ -157,83 +165,63 @@
 
 <script setup>
 const projectIdea = ref("test");
-const errorProjectIdea = computed(() => {
-  if (!projectIdea.value) {
-    return { isError: true, message: "Project Idea is required" };
-  }
-  return { isError: false, message: "" };
-});
-
 const group = ref("test");
-const errorGroup = computed(() => {
-  if (!group.value) {
-    return { isError: true, message: "Target Group is required" };
-  }
-  return { isError: false, message: "" };
-});
-
 const age = ref(Math.floor(Math.random() * 101));
-const errorAge = computed(() => {
-  if (!age.value) {
-    return { isError: true, message: "Age is required" };
-  } else if (age.value < 0) {
-    return { isError: true, message: "Age must be greater than 0" };
-  } else if (age.value > 100) {
-    return { isError: true, message: "Age must be less than 100" };
-  }
-  return { isError: false, message: "" };
-});
-
 const genders = ref(["not necessary", "male", "female", "other"]);
 const gender = ref(
   genders.value[Math.floor(Math.random() * genders.value.length)]
 );
-const errorGender = computed(() => {
-  if (!gender.value) {
-    return { isError: true, message: "Gender is required" };
-  }
-  return { isError: false, message: "" };
-});
-
 const goal = ref("");
 const goals = ref(["test"]);
-const errorGoals = computed(() => {
-  if (!goals.value.length) {
-    return { isError: true, message: "Goals are required" };
-  } else if (goals.value.length < 1) {
-    return { isError: true, message: "At least one goal is required" };
-  } else if (goals.value.length > 5) {
-    return { isError: true, message: "Maximum of 5 goals are allowed" };
-  }
-  return { isError: false, message: "" };
-});
+
+const errorProjectIdea = computed(() => ({
+  isError: !projectIdea.value,
+  message: "Project Idea is required",
+}));
+
+const errorGroup = computed(() => ({
+  isError: !group.value,
+  message: "Target Group is required",
+}));
+
+const errorAge = computed(() => ({
+  isError: !age.value || age.value < 0 || age.value > 100,
+  message:
+    age.value < 0 || age.value > 100
+      ? "Age must be between 0 and 100"
+      : "Age is required",
+}));
+
+const errorGender = computed(() => ({
+  isError: !gender.value,
+  message: "Gender is required",
+}));
+
+const errorGoals = computed(() => ({
+  isError: goals.value.length === 0,
+  message: "test",
+}));
+
 const addGoal = () => {
-  if (goals.value.length >= 5) {
-    return;
-  }
-  if (goal.value) {
-    goals.value = [...goals.value, goal.value];
+  if (goals.value.length < 5 && goal.value) {
+    goals.value.push(goal.value);
     goal.value = "";
   }
 };
+
 const removeGoal = (index) => {
-  goals.value = goals.value.filter((_, i) => i !== index);
+  delete goals.value[index];
 };
 
-const hasError = computed(() => {
-  return (
-    errorProjectIdea.value.isError ||
-    errorGroup.value.isError ||
-    errorAge.value.isError ||
-    errorGender.value.isError ||
-    errorGoals.value.isError
-  );
-});
+const hasError = computed(() =>
+  [errorProjectIdea, errorGroup, errorAge, errorGender, errorGoals].some(
+    (error) => error.value.isError
+  )
+);
 
 const createPersona = () => {
-  if (hasError.value) {
-    return;
+  if (!hasError.value) {
+    alert("Persona created");
   }
-  alert("Persona created");
 };
 </script>
