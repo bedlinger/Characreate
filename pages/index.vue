@@ -19,9 +19,9 @@
                 name="projectIdea"
                 v-tooltip.right="'Describe your project idea'"
                 rows="5"
-                autoResize
+                :maxlength="365"
                 :invalid="errorProjectIdea.isError"
-                class="w-full"
+                class="w-full resize-none"
               />
               <label for="projectIdea">Project Idea</label>
             </FloatLabel>
@@ -43,9 +43,9 @@
                 name="group"
                 v-tooltip.right="'Describe your target group'"
                 rows="5"
-                autoResize
+                :maxlength="365"
                 :invalid="errorGroup.isError"
-                class="w-full"
+                class="w-full resize-none"
               />
               <label for="group">Target Group</label>
             </FloatLabel>
@@ -119,6 +119,7 @@
                   v-model="goal"
                   name="goal"
                   class="w-full"
+                  :maxlength="65"
                   @keydown.enter="addGoal()"
                   :invalid="errorGoals.isError"
                 />
@@ -161,8 +162,12 @@
 </template>
 
 <script setup>
-const projectIdea = ref("An innovative app that connects young travelers with sustainable travel opportunities");
-const group = ref("Eco-conscious individuals aged 18-35, predominantly students or young professionals interested in exploring new cultures while minimizing their environmental impact.");
+const projectIdea = ref(
+  "An innovative app that connects young travelers with sustainable travel opportunities"
+);
+const group = ref(
+  "Eco-conscious individuals aged 18-35, predominantly students or young professionals interested in exploring new cultures while minimizing their environmental impact."
+);
 const age = ref(Math.floor(Math.random() * (35 - 18 + 1)) + 18);
 const minAge = 14;
 const maxAge = 100;
@@ -171,7 +176,11 @@ const gender = ref(
   genders.value[Math.floor(Math.random() * genders.value.length)]
 );
 const goal = ref("");
-const goals = ref(["Find affordable and sustainable travel options", "Connect with like-minded travelers", "Learn more about local cultures through eco-tourism"]);
+const goals = ref([
+  "Find affordable and sustainable travel options",
+  "Connect with like-minded travelers",
+  "Learn more about local cultures through eco-tourism",
+]);
 const maxNumberOfGoals = 5;
 
 const errorProjectIdea = computed(() => ({
@@ -241,7 +250,7 @@ const createPersona = async () => {
       messages: [
         {
           role: "system",
-          content: "You are"
+          content: "You are",
         },
         {
           role: "user",
@@ -249,7 +258,7 @@ const createPersona = async () => {
         },
       ],
       response_format: { type: "json_object" },
-    }
+    },
   })
     .catch((error) => {
       console.error("Error:", error);
