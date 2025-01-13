@@ -1,4 +1,5 @@
 <template>
+  <Toast />
   <div class="flex flex-col text-center gap-6">
     <h2 class="text-3xl text-center italic px-48">
       "The purpose of personas is to create reliable and realistic
@@ -94,7 +95,7 @@
                   v-tooltip.right="
                     'Select the gender of the persona if necessary'
                   "
-                  :options="genders"
+                  :options="GENDER"
                   :invalid="errorGender.isError"
                   class="w-full text-left"
                 />
@@ -163,37 +164,31 @@
 </template>
 
 <script setup>
+import { useToast } from "primevue/usetoast";
+
+const toast = useToast();
+const config = useRuntimeConfig();
+const loading = ref(false);
+
 const projectIdea = ref(
   "An innovative app that connects young travelers with sustainable travel opportunities"
 );
-const group = ref(
-  "Eco-conscious individuals aged 18-35, predominantly students or young professionals interested in exploring new cultures while minimizing their environmental impact."
-);
-const age = ref(Math.floor(Math.random() * (35 - 18 + 1)) + 18);
-const MIN_AGE = 14;
-const MAX_AGE = 100;
-const genders = ref(["not necessary", "male", "female", "other"]);
-const gender = ref(
-  genders.value[Math.floor(Math.random() * genders.value.length)]
-);
-const goal = ref("");
-const goals = ref([
-  "Find affordable and sustainable travel options",
-  "Connect with like-minded travelers",
-  "Learn more about local cultures through eco-tourism",
-]);
-const MAX_GOALS = 5;
-
 const errorProjectIdea = computed(() => ({
   isError: !projectIdea.value,
   message: "Project Idea is required",
 }));
 
+const group = ref(
+  "Eco-conscious individuals aged 18-35, predominantly students or young professionals interested in exploring new cultures while minimizing their environmental impact."
+);
 const errorGroup = computed(() => ({
   isError: !group.value,
   message: "Target Group is required",
 }));
 
+const MIN_AGE = 14;
+const MAX_AGE = 100;
+const age = ref(Math.floor(Math.random() * (35 - 18 + 1)) + 18);
 const errorAge = computed(() => ({
   isError: !age.value || age.value < MIN_AGE || age.value > MAX_AGE,
   message:
@@ -202,23 +197,32 @@ const errorAge = computed(() => ({
       : "Age is required",
 }));
 
+const GENDER = ref(["not necessary", "male", "female", "other"]);
+const gender = ref(
+  GENDER.value[Math.floor(Math.random() * GENDER.value.length)]
+);
 const errorGender = computed(() => ({
   isError: !gender.value,
   message: "Gender is required",
 }));
 
+const goal = ref("");
+const goals = ref([
+  "Find affordable and sustainable travel options",
+  "Connect with like-minded travelers",
+  "Learn more about local cultures through eco-tourism",
+]);
+const MAX_GOALS = 5;
 const errorGoals = computed(() => ({
   isError: goals.value.length <= 0,
   message: "At least one goal is required",
 }));
-
 const addGoal = () => {
   if (goals.value.length < MAX_GOALS && goal.value) {
     goals.value.push(goal.value);
     goal.value = "";
   }
 };
-
 const removeGoal = (index) => {
   const updatedGoals = [...goals.value];
   updatedGoals.splice(index, 1);
@@ -230,8 +234,6 @@ const hasError = computed(() =>
     (error) => error.value.isError
   )
 );
-
-const config = useRuntimeConfig();
 
 const systemPrompt = `
     You are an AI system tasked with generating detailed personas based on user input. A persona is a fictional representation of a target user group designed to facilitate empathy and understanding for product design and usability testing.
@@ -256,7 +258,6 @@ const systemPrompt = `
     }
     Ensure the response adheres strictly to this format and includes all fields.
   `;
-
 const userPrompt = computed(() => {
   return `
     Generate a persona for the following:
@@ -269,11 +270,14 @@ const userPrompt = computed(() => {
   `;
 });
 
-const loading = ref(false);
-
 const createPersona = async () => {
   if (hasError.value) {
-    alert("Please fill out all required fields");
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Please fill in all required fields",
+      life: 3000,
+    });
     return;
   }
 
@@ -308,7 +312,12 @@ const createPersona = async () => {
     async onResponse({ request, response, options }) {
       // console.log("[fetch response]", request, response.status, response.body);
       if (response.status !== 200) {
-        alert("Failed to generate persona. Please try again.");
+        toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: `Failed to generate persona with an response status of ${response.status}`,
+          life: 3000,
+        });
         return;
       }
       loading.value = false;
