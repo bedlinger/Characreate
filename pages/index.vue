@@ -313,6 +313,7 @@ const createPersona = async () => {
         detail: "Failed to generate persona! Please try again.",
         life: 3000,
       });
+      loading.value = false;
       return;
     },
     async onResponse({ request, response, options }) {
@@ -324,6 +325,7 @@ const createPersona = async () => {
           detail: `Failed to generate persona with an response status of ${response.status}! Please try again.`,
           life: 3000,
         });
+        loading.value = false;
         return;
       }
       loading.value = false;
