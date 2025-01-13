@@ -256,7 +256,8 @@ const systemPrompt = `
     Ensure the response adheres strictly to this format and includes all fields.
   `;
 
-const userPrompt = `
+const userPrompt = computed(() => {
+  return `
     Generate a persona for the following:
     - Project Idea: ${projectIdea.value}
     - Target Group: ${group.value}
@@ -265,6 +266,7 @@ const userPrompt = `
     - Goals: ${JSON.stringify(goals.value)}
     Respond in JSON format as specified.
   `;
+});
 
 const createPersona = async () => {
   if (hasError.value) {
