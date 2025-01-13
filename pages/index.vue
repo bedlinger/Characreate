@@ -161,15 +161,17 @@
 </template>
 
 <script setup>
-const projectIdea = ref("test");
-const group = ref("test");
-const age = ref(Math.floor(Math.random() * 101));
+const projectIdea = ref("An innovative app that connects young travelers with sustainable travel opportunities");
+const group = ref("Eco-conscious individuals aged 18-35, predominantly students or young professionals interested in exploring new cultures while minimizing their environmental impact.");
+const age = ref(Math.floor(Math.random() * (35 - 18 + 1)) + 18);
+const minAge = 14;
+const maxAge = 100;
 const genders = ref(["not necessary", "male", "female", "other"]);
 const gender = ref(
   genders.value[Math.floor(Math.random() * genders.value.length)]
 );
 const goal = ref("");
-const goals = ref(["test"]);
+const goals = ref(["Find affordable and sustainable travel options", "Connect with like-minded travelers", "Learn more about local cultures through eco-tourism"]);
 const maxNumberOfGoals = 5;
 
 const errorProjectIdea = computed(() => ({
@@ -183,10 +185,10 @@ const errorGroup = computed(() => ({
 }));
 
 const errorAge = computed(() => ({
-  isError: !age.value || age.value < 0 || age.value > 100,
+  isError: !age.value || age.value < minAge || age.value > maxAge,
   message:
-    age.value < 0 || age.value > 100
-      ? "Age must be between 0 and 100"
+    age.value < minAge || age.value > maxAge
+      ? `Age must be between ${minAge} and ${maxAge}`
       : "Age is required",
 }));
 
@@ -219,9 +221,41 @@ const hasError = computed(() =>
   )
 );
 
-const createPersona = () => {
-  if (!hasError.value) {
-    alert("Persona created");
+const config = useRuntimeConfig();
+
+const createPersona = async () => {
+  if (hasError.value) {
+    alert("Please fill out all required fields");
   }
+
+  const prompt = "ADD PROMPT HERE";
+
+  await $fetch(config.public.apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${config.public.apiKey}`,
+    },
+    body: {
+      model: "Qwen/Qwen2.5-72B-Instruct",
+      messages: [
+        {
+          role: "system",
+          content: "You are"
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      response_format: { type: "json_object" },
+    }
+  })
+    .catch((error) => {
+      console.error("Error:", error);
+    })
+    .then((response) => {
+      console.log("Success:", response);
+    });
 };
 </script>
