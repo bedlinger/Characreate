@@ -274,7 +274,7 @@ const createPersona = async () => {
     return;
   }
 
-  await $fetch(config.public.apiUrl, {
+  const response = await $fetch(config.public.apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -304,5 +304,7 @@ const createPersona = async () => {
       console.log("[fetch response]", request, response.status, response.body);
     },
   });
+
+  console.log(response);
 };
 </script>
