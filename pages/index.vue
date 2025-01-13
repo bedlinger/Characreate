@@ -232,12 +232,45 @@ const hasError = computed(() =>
 
 const config = useRuntimeConfig();
 
+const systemPrompt = `
+    You are an AI system tasked with generating detailed personas based on user input. A persona is a fictional representation of a target user group designed to facilitate empathy and understanding for product design and usability testing.
+    Follow these guidelines:
+    - Accept input for Project Idea, Target Group, Age, Gender, and Goals.
+    - Generate a persona with details: Name, Age, Gender, Location, Occupation, Biography, Hobbies and Interests, Technical Experience, Goals, Motivation, and Challenges.
+    - Provide the response in the following JSON format:
+    {
+      "persona": {
+        "name": "String",
+        "age": Integer,
+        "gender": "String",
+        "location": "String",
+        "occupation": "String",
+        "biography": "String",
+        "hobbies_and_interests": ["String"],
+        "technical_experience": "String",
+        "goals": ["String"],
+        "motivation": "String",
+        "challenges": ["String"]
+      }
+    }
+    Ensure the response adheres strictly to this format and includes all fields.
+  `;
+
+const userPrompt = `
+    Generate a persona for the following:
+    - Project Idea: ${projectIdea.value}
+    - Target Group: ${group.value}
+    - Age: ${age.value}
+    - Gender: ${gender.value}
+    - Goals: ${JSON.stringify(goals.value)}
+    Respond in JSON format as specified.
+  `;
+
 const createPersona = async () => {
   if (hasError.value) {
     alert("Please fill out all required fields");
+    return;
   }
-
-  const prompt = "ADD PROMPT HERE";
 
   await $fetch(config.public.apiUrl, {
     method: "POST",
@@ -250,11 +283,11 @@ const createPersona = async () => {
       messages: [
         {
           role: "system",
-          content: "",
+          content: systemPrompt.trim(),
         },
         {
           role: "user",
-          content: prompt,
+          content: userPrompt.trim(),
         },
       ],
       response_format: { type: "json_object" },
