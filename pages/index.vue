@@ -8,7 +8,7 @@
     <div class="card flex justify-center">
       <Form
         @submit="createPersona()"
-        class="flex flex-col gap-9 w-1/3"
+        class="flex flex-col gap-9 w-2/3"
         @keydown.prevent.enter
       >
         <div class="card flex justify-center">
