@@ -289,7 +289,7 @@ const createPersona = async () => {
         },
         {
           role: "user",
-          content: userPrompt.trim(),
+          content: userPrompt.value.trim(),
         },
       ],
       response_format: { type: "json_object" },
