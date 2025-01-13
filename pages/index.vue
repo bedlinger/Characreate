@@ -129,7 +129,7 @@
                     @click="addGoal()"
                     class="w-full h-full"
                     severity="secondary"
-                    :disabled="goals.length >= maxNumberOfGoals"
+                    :disabled="goals.length >= MAX_GOALS"
                   >
                     <Icon name="mdi:plus-circle-outline" />
                   </Button>
@@ -169,8 +169,8 @@ const group = ref(
   "Eco-conscious individuals aged 18-35, predominantly students or young professionals interested in exploring new cultures while minimizing their environmental impact."
 );
 const age = ref(Math.floor(Math.random() * (35 - 18 + 1)) + 18);
-const minAge = 14;
-const maxAge = 100;
+const MIN_AGE = 14;
+const MAX_AGE = 100;
 const genders = ref(["not necessary", "male", "female", "other"]);
 const gender = ref(
   genders.value[Math.floor(Math.random() * genders.value.length)]
@@ -181,7 +181,7 @@ const goals = ref([
   "Connect with like-minded travelers",
   "Learn more about local cultures through eco-tourism",
 ]);
-const maxNumberOfGoals = 5;
+const MAX_GOALS = 5;
 
 const errorProjectIdea = computed(() => ({
   isError: !projectIdea.value,
@@ -194,10 +194,10 @@ const errorGroup = computed(() => ({
 }));
 
 const errorAge = computed(() => ({
-  isError: !age.value || age.value < minAge || age.value > maxAge,
+  isError: !age.value || age.value < MIN_AGE || age.value > MAX_AGE,
   message:
-    age.value < minAge || age.value > maxAge
-      ? `Age must be between ${minAge} and ${maxAge}`
+    age.value < MIN_AGE || age.value > MAX_AGE
+      ? `Age must be between ${MIN_AGE} and ${MAX_AGE}`
       : "Age is required",
 }));
 
@@ -212,7 +212,7 @@ const errorGoals = computed(() => ({
 }));
 
 const addGoal = () => {
-  if (goals.value.length < maxNumberOfGoals && goal.value) {
+  if (goals.value.length < MAX_GOALS && goal.value) {
     goals.value.push(goal.value);
     goal.value = "";
   }
@@ -250,7 +250,7 @@ const createPersona = async () => {
       messages: [
         {
           role: "system",
-          content: "You are",
+          content: "",
         },
         {
           role: "user",
