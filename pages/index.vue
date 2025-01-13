@@ -153,6 +153,7 @@
         </div>
         <Button
           type="submit"
+          :loading="loading"
           label="Create Persona"
           class="w-1/2 self-center"
         />
@@ -268,6 +269,8 @@ const userPrompt = computed(() => {
   `;
 });
 
+const loading = ref(false);
+
 const createPersona = async () => {
   if (hasError.value) {
     alert("Please fill out all required fields");
@@ -295,13 +298,20 @@ const createPersona = async () => {
       response_format: { type: "json_object" },
     },
     async onRequest({ request, options }) {
-      console.log("[fetch request]", request, options);
+      // console.log("[fetch request]", request, options);
+      loading.value = true;
     },
     async onRequestError({ request, options, error }) {
-      console.log("[fetch request error]", request, error);
+      // console.log("[fetch request error]", request, error);
+      loading.value = false;
     },
     async onResponse({ request, response, options }) {
-      console.log("[fetch response]", request, response.status, response.body);
+      // console.log("[fetch response]", request, response.status, response.body);
+      if (response.status !== 200) {
+        alert("Failed to generate persona. Please try again.");
+        return;
+      }
+      loading.value = false;
     },
   });
 
