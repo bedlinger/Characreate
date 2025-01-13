@@ -143,13 +143,9 @@
               {{ errorGoals.message }}
             </Message>
             <div class="flex flex-row flex-wrap gap-4 pt-2">
-              <Chip
-                v-for="(goal, index) in goals"
-                :key="index"
-                :label="goal"
-                removable
-                @remove="removeGoal(index)"
-              />
+              <div v-for="(goal, index) in goals" :key="goal + index">
+                <Chip :label="goal" removable @remove="removeGoal(index)" />
+              </div>
             </div>
           </div>
         </div>
@@ -198,8 +194,8 @@ const errorGender = computed(() => ({
 }));
 
 const errorGoals = computed(() => ({
-  isError: goals.value.length === 0,
-  message: "test",
+  isError: goals.value.length <= 0,
+  message: "At least one goal is required",
 }));
 
 const addGoal = () => {
@@ -210,7 +206,10 @@ const addGoal = () => {
 };
 
 const removeGoal = (index) => {
-  delete goals.value[index];
+  const updatedGoals = [...goals.value];
+  updatedGoals.splice(index, 1);
+  goals.value = updatedGoals;
+  console.log(goals.value);
 };
 
 const hasError = computed(() =>
