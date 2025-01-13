@@ -128,6 +128,7 @@
                     @click="addGoal()"
                     class="w-full h-full"
                     severity="secondary"
+                    :disabled="goals.length >= maxNumberOfGoals"
                   >
                     <Icon name="mdi:plus-circle-outline" />
                   </Button>
@@ -169,6 +170,7 @@ const gender = ref(
 );
 const goal = ref("");
 const goals = ref(["test"]);
+const maxNumberOfGoals = 5;
 
 const errorProjectIdea = computed(() => ({
   isError: !projectIdea.value,
@@ -199,7 +201,7 @@ const errorGoals = computed(() => ({
 }));
 
 const addGoal = () => {
-  if (goals.value.length < 5 && goal.value) {
+  if (goals.value.length < maxNumberOfGoals && goal.value) {
     goals.value.push(goal.value);
     goal.value = "";
   }
@@ -209,7 +211,6 @@ const removeGoal = (index) => {
   const updatedGoals = [...goals.value];
   updatedGoals.splice(index, 1);
   goals.value = updatedGoals;
-  console.log(goals.value);
 };
 
 const hasError = computed(() =>
