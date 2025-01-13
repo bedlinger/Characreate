@@ -19,7 +19,7 @@
                 name="projectIdea"
                 v-tooltip.right="'Describe your project idea'"
                 rows="5"
-                :maxlength="365"
+                :maxlength="735"
                 :invalid="errorProjectIdea.isError"
                 class="w-full resize-none"
               />
@@ -43,7 +43,7 @@
                 name="group"
                 v-tooltip.right="'Describe your target group'"
                 rows="5"
-                :maxlength="365"
+                :maxlength="735"
                 :invalid="errorGroup.isError"
                 class="w-full resize-none"
               />
