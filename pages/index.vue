@@ -294,12 +294,15 @@ const createPersona = async () => {
       ],
       response_format: { type: "json_object" },
     },
-  })
-    .catch((error) => {
-      console.error("Error:", error);
-    })
-    .then((response) => {
-      console.log("Success:", response);
-    });
+    async onRequest({ request, options }) {
+      console.log("[fetch request]", request, options);
+    },
+    async onRequestError({ request, options, error }) {
+      console.log("[fetch request error]", request, error);
+    },
+    async onResponse({ request, response, options }) {
+      console.log("[fetch response]", request, response.status, response.body);
+    },
+  });
 };
 </script>
