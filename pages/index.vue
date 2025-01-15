@@ -161,6 +161,9 @@
       </Form>
     </div>
   </div>
+  <Dialog v-model:visible="showPersonaCard" header="Your Persona" :modal="true" :draggable="false">
+    <p>{{ persona }}</p>
+  </Dialog>
 </template>
 
 <script setup>
@@ -271,6 +274,7 @@ const userPrompt = computed(() => {
 });
 
 const persona = ref(null);
+const showPersonaCard = ref(false);
 const fetchPersonaData = async () => {
   if (hasError.value) {
     toast.add({
@@ -335,5 +339,6 @@ const fetchPersonaData = async () => {
 
   const personaAsString = response.choices[0].message.content;
   persona.value = JSON.parse(personaAsString).persona;
+  showPersonaCard.value = true;
 };
 </script>
