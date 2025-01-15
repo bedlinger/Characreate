@@ -169,7 +169,7 @@
     class="w-5/6"
   >
   <div class="flex flex-col gap-6">
-    <PersonaCard :persona="persona" />
+    <PersonaCard id="persona-card" :persona="persona" />
     <Button
         label="Export Persona Card"
         class="w-1/2 self-center"
@@ -355,5 +355,30 @@ const fetchPersonaData = async () => {
     "+"
   )}`;
   showPersonaCard.value = true;
+};
+
+const { $html2pdf } = useNuxtApp()
+const exportPersonaCard = () => {
+  if (document) {
+    const element = document.getElementById('persona-card')
+
+    // clone the element: https://stackoverflow.com/questions/60557116/html2pdf-wont-print-hidden-div-after-unhiding-it/60558415#60558415
+    const clonedElement = element.cloneNode(true)
+    clonedElement.classList.remove('hidden')
+    clonedElement.classList.add('block')
+    // need to append to the document, otherwise the downloading doesn't start
+    document.body.appendChild(clonedElement)
+
+    // https://www.npmjs.com/package/html2pdf.js/v/0.9.0#options
+    $html2pdf(clonedElement, {
+      filename: 'persona-card.pdf',
+      image: { type: 'png' },
+      enableLinks: true
+    })
+    clonedElement.remove()
+  }
+
+  showPersonaCard.value = false
+  persona.value = null
 };
 </script>
