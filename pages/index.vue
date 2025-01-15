@@ -168,75 +168,7 @@
     :draggable="false"
     class="w-5/6"
   >
-    <Card>
-      <template #title>{{ persona.name }} - {{ persona.occupation }}</template>
-      <template #content>
-        <div class="grid grid-cols-3 gap-6">
-          <div id="profile-picture">
-            <div class="relative">
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-slate-300 to-transparent"
-              ></div>
-              <div class="absolute bottom-0 pl-1 pb-0.5">
-                <p>Age: {{ persona.age }}</p>
-                <p>Gender: {{ persona.gender }}</p>
-                <p>Location: {{ persona.location }}</p>
-              </div>
-              <img
-                :src="persona.profile_image"
-                alt="Profile Picture"
-                class="object-cover w-full h-52"
-              />
-            </div>
-          </div>
-          <div id="motivation">
-            <div class="flex flex-col gap-2">
-              <h5 class="text-xl">Motivation</h5>
-              <p class="italic">{{ persona.motivation }}</p>
-            </div>
-          </div>
-          <div id="hobbies-and-interests">
-            <div class="flex flex-col gap-2">
-              <h5 class="text-xl">Hobbies and Interests</h5>
-              <ul>
-                <li v-for="hobby in persona.hobbies_and_interests" :key="hobby">
-                  {{ hobby }}
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div id="goals">
-            <div class="flex flex-col gap-2">
-              <h5 class="text-xl">Goals</h5>
-              <ul>
-                <li v-for="goal in persona.goals" :key="goal">
-                  {{ goal }}
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div id="technical-experience">
-            <div class="flex flex-col gap-2">
-              <h5 class="text-xl">Technical experience</h5>
-              <p class="italic">{{ persona.technical_experience }}</p>
-            </div>
-          </div>
-          <div id="challenges">
-            <div class="flex flex-col gap-2">
-              <h5 class="text-xl">Challenges</h5>
-              <ul>
-                <li v-for="challenge in persona.challenges" :key="challenge">
-                  {{ challenge }}
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div id="bio" class="pt-6">
-          <p class="italic text-center">{{ persona.biography }}</p>
-        </div>
-      </template>
-    </Card>
+    <PersonaCard :persona="persona" />
   </Dialog>
 </template>
 
@@ -411,9 +343,10 @@ const fetchPersonaData = async () => {
 
   const personaAsString = response.choices[0].message.content;
   persona.value = JSON.parse(personaAsString).persona;
-  const splitName = persona.value.name.replace(" ", "+");
-  console.log(splitName);
-  persona.value.profile_image = `https://ui-avatars.com/api/?name${splitName}`;
+  persona.value.profile_image = `https://ui-avatars.com/api/?name${persona.value.name.replace(
+    " ",
+    "+"
+  )}`;
   console.log(persona.value);
   showPersonaCard.value = true;
 };
