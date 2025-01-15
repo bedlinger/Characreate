@@ -63,7 +63,8 @@
             </div>
           </div>
         </div>
-        <div id="bio" class="pt-6">
+        <Divider></Divider>
+        <div id="bio">
           <p class="italic text-center">{{ persona.biography }}</p>
         </div>
       </template>
