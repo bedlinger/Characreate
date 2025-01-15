@@ -270,6 +270,7 @@ const userPrompt = computed(() => {
   `;
 });
 
+const persona = ref(null);
 const fetchPersonaData = async () => {
   if (hasError.value) {
     toast.add({
@@ -332,6 +333,7 @@ const fetchPersonaData = async () => {
     },
   });
 
-  console.log(response);
+  const personaAsString = response.choices[0].message.content;
+  persona.value = JSON.parse(personaAsString).persona;
 };
 </script>
