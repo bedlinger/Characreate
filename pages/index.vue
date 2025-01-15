@@ -8,7 +8,7 @@
     <h3 class="text-2xl font-bold">Create your persona</h3>
     <div class="card flex justify-center">
       <Form
-        @submit="createPersona()"
+        @submit="fetchPersonaData()"
         class="flex flex-col gap-9 w-2/3"
         @keydown.prevent.enter
       >
@@ -270,7 +270,7 @@ const userPrompt = computed(() => {
   `;
 });
 
-const createPersona = async () => {
+const fetchPersonaData = async () => {
   if (hasError.value) {
     toast.add({
       severity: "warn",
