@@ -168,7 +168,14 @@
     :draggable="false"
     class="w-5/6"
   >
+  <div class="flex flex-col gap-6">
     <PersonaCard :persona="persona" />
+    <Button
+        label="Export Persona Card"
+        class="w-1/2 self-center"
+        @click="exportPersonaCard()"
+      />
+  </div>
   </Dialog>
 </template>
 
