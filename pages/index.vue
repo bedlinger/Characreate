@@ -354,7 +354,6 @@ const fetchPersonaData = async () => {
     " ",
     "+"
   )}`;
-  console.log(persona.value);
   showPersonaCard.value = true;
 };
 </script>
