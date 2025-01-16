@@ -365,7 +365,8 @@ const exportPersonaCard = () => {
     const opt = {
       filename: "persona-card.pdf",
       image: { type: "jpeg", quality: 1 },
-      jsPDF: { orientation: "landscape", format: [260, 160]  },
+      html2canvas: { useCORS: true },
+      jsPDF: { orientation: "landscape", format: [260, 175] },
     };
 
     $html2pdf(element, opt);
