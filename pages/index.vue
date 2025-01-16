@@ -357,20 +357,13 @@ const fetchPersonaData = async () => {
   showPersonaCard.value = true;
 };
 
-const { $html2pdf } = useNuxtApp();
+const { $htmlToImage } = useNuxtApp();
 const exportPersonaCard = () => {
-  if (document) {
-    const element = document.getElementById("persona-card");
-    // https://www.npmjs.com/package/html2pdf.js/v/0.9.0#
-    const opt = {
-      filename: "persona-card.pdf",
-      image: { type: "jpeg", quality: 1 },
-      html2canvas: { useCORS: true },
-      jsPDF: { orientation: "landscape", format: [260, 175] },
-    };
-
-    $html2pdf(element, opt);
-  }
+  $htmlToImage
+    .toPng(document.getElementById("persona-card"))
+    .then(function (dataUrl) {
+      download(dataUrl, "persona-card.png");
+    });
 
   showPersonaCard.value = false;
   persona.value = null;
