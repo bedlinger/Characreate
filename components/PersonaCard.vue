@@ -6,7 +6,7 @@
         <div id="profile-picture">
           <div class="relative">
             <div
-              class="absolute inset-0 bg-gradient-to-t from-slate-300 to-transparent"
+              class="absolute inset-0 bg-gradient-to-t from-slate-100 to-transparent"
             ></div>
             <div class="absolute bottom-0 pl-1 pb-0.5">
               <p>Age: {{ persona.age }}</p>
