@@ -364,9 +364,8 @@ const exportPersonaCard = () => {
     // https://www.npmjs.com/package/html2pdf.js/v/0.9.0#
     const opt = {
       filename: "persona-card.pdf",
-      margin: 1,
       image: { type: "jpeg", quality: 1 },
-      jsPDF: { orientation: "landscape", format: "a4" },
+      jsPDF: { orientation: "landscape", format: [260, 160]  },
     };
 
     $html2pdf(element, opt);
