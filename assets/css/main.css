@@ -6,4 +6,8 @@
     body {
         @apply bg-slate-50;
     }
+
+    ul {
+        @apply list-inside list-disc;
+    }
 }
