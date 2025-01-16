@@ -350,10 +350,7 @@ const fetchPersonaData = async () => {
 
   const personaAsString = response.choices[0].message.content;
   persona.value = JSON.parse(personaAsString).persona;
-  persona.value.profile_image = `https://ui-avatars.com/api/?name${persona.value.name.replace(
-    " ",
-    "+"
-  )}`;
+  persona.value.profile_image = `https://robohash.org/${persona.value.name}`;
   showPersonaCard.value = true;
 };
 
@@ -362,7 +359,10 @@ const exportPersonaCard = () => {
   $htmlToImage
     .toPng(document.getElementById("persona-card"))
     .then(function (dataUrl) {
-      download(dataUrl, "persona-card.png");
+      var link = document.createElement("a");
+      link.download = "persona-card.png";
+      link.href = dataUrl;
+      link.click();
     });
 
   showPersonaCard.value = false;
