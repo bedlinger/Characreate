@@ -350,7 +350,7 @@ const fetchPersonaData = async () => {
 
   const personaAsString = response.choices[0].message.content;
   persona.value = JSON.parse(personaAsString).persona;
-  persona.value.profile_image = `https://robohash.org/${persona.value.name}`;
+  persona.value.profile_image = `https://robohash.org/${persona.value.name}?set=set2`;
   showPersonaCard.value = true;
 };
 
