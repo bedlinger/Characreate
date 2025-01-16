@@ -10,4 +10,8 @@
     ul {
         @apply list-inside list-disc;
     }
+
+    .persona-info {
+        @apply bg-primary-300 rounded-2xl p-2;
+    }
 }
