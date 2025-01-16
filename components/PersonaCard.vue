@@ -29,17 +29,21 @@
         <div id="hobbies-and-interests">
           <div class="flex flex-col gap-2">
             <h5 class="text-xl">Hobbies and Interests</h5>
-            <Chip
-              v-for="hobby in persona.hobbies_and_interests"
-              :key="hobby"
-              :label="hobby"
-            />
+            <div class="flex flex-row flex-wrap gap-2">
+              <Chip
+                v-for="hobby in persona.hobbies_and_interests"
+                :key="hobby"
+                :label="hobby"
+              />
+            </div>
           </div>
         </div>
         <div id="goals">
           <div class="flex flex-col gap-2">
             <h5 class="text-xl">Goals</h5>
-            <Chip v-for="goal in persona.goals" :key="goal" :label="goal" />
+            <div class="flex flex-row flex-wrap gap-2">
+              <Chip v-for="goal in persona.goals" :key="goal" :label="goal" />
+            </div>
           </div>
         </div>
         <div id="technical-experience">
@@ -51,11 +55,13 @@
         <div id="challenges">
           <div class="flex flex-col gap-2">
             <h5 class="text-xl">Challenges</h5>
-            <Chip
-              v-for="challenge in persona.challenges"
-              :key="challenge"
-              :label="challenge"
-            />
+            <div class="flex flex-row flex-wrap gap-2">
+              <Chip
+                v-for="challenge in persona.challenges"
+                :key="challenge"
+                :label="challenge"
+              />
+            </div>
           </div>
         </div>
       </div>
