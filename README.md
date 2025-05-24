@@ -21,7 +21,7 @@ Characreate is a simple yet powerful persona generator built as a school project
 
 ## ✨ Features
 
-- 🤖 **AI-Powered Generation**: Utilizes Qwen2.5-72B-Instruct model to create detailed personas
+- 🤖 **AI-Powered Generation**: Utilizes Qwen2.5-72B-Instruct model via the deepinfra API to create detailed personas
 - 🎨 **Custom Personas**: Define project ideas, target groups, demographics, and goals
 - 📊 **Rich Persona Details**: Generate comprehensive profiles including:
   - Demographics (name, age, gender, location)
