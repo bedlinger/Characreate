@@ -6,7 +6,6 @@
   <p>Create realistic user personas for your projects with AI-powered insights</p>
   
   [![Vue.js](https://img.shields.io/badge/Vue.js-85%25-4FC08D?style=flat-square&logo=vue.js&logoColor=white)](https://vuejs.org/)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-8.4%25-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
   [![JavaScript](https://img.shields.io/badge/JavaScript-5.2%25-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
   [![Nuxt.js](https://img.shields.io/badge/Nuxt.js-3-00DC82?style=flat-square&logo=nuxt.js&logoColor=white)](https://nuxt.com/)
   [![PrimeVue](https://img.shields.io/badge/PrimeVue-3-4A6CF7?style=flat-square&logo=prime&logoColor=white)](https://primevue.org/)
@@ -40,7 +39,6 @@ Characreate is a simple yet powerful persona generator built as a school project
 - **[Vue](https://vuejs.org/)**: Progressive JavaScript framework for building user interfaces
 - **[PrimeVue](https://primevue.org/)**: Comprehensive UI component library for Vue
 - **[Tailwind CSS](https://tailwindcss.com/)**: Utility-first CSS framework for rapid UI development
-- **[TypeScript](https://www.typescriptlang.org/)**: Typed JavaScript for better development experience
 - **HTML-to-Image**: For exporting persona cards as PNG files
 
 ## 🛠️ Setup and Installation
