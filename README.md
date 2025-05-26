@@ -21,6 +21,8 @@ Characreate is a simple yet powerful persona generator built as a school project
 ## ✨ Features
 
 - 🤖 **AI-Powered Generation**: Utilizes Qwen2.5-72B-Instruct model via the deepinfra API to create detailed personas
+- 🔒 **Server-Side Processing**: Secure API calls with rate limiting with automatic reset and protection from external access
+- 📊 **Usage Tracking**: Real-time display of weekly generation quota with Redis-backed persistence
 - 🎨 **Custom Personas**: Define project ideas, target groups, demographics, and goals
 - 📊 **Rich Persona Details**: Generate comprehensive profiles including:
   - Demographics (name, age, gender, location)
@@ -53,8 +55,13 @@ Characreate is a simple yet powerful persona generator built as a school project
 Create a `.env` file in the root directory with the following variables:
 
 ```
-API_URL=<your-api-endpoint>
-API_KEY=<your-api-key>
+API_URL=<deppinfra-api-endpoint>
+API_KEY=<deepinfra-api-key>
+
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
 ```
 
 ### Installation
@@ -75,10 +82,20 @@ npm run preview
 
 ## 🖥️ How It Works
 
-1. **Input Project Details**: Enter your project idea, target group, and persona characteristics
-2. **Define Goals**: Add relevant goals for your persona
-3. **Generate Persona**: Let the AI create a detailed persona based on your inputs
-4. **Review and Export**: View the generated persona card and export it as a PNG image
+1. **Check Weekly Usage**: View the current persona generation usage and remaining quota
+2. **Input Project Details**: Enter your project idea, target group, and persona characteristics
+3. **Define Goals**: Add relevant goals for your persona
+4. **Generate Persona**: Let the AI create a detailed persona based on your inputs
+5. **Review and Export**: View the generated persona card and export it as a PNG image
+
+## 🔒 Rate Limiting
+
+The application includes a built-in weekly rate limit for persona generation:
+
+- **Default Limit**: 20 personas per week
+- **Storage**: Uses Redis for persistent counter storage
+- **Reset**: Automatically resets every 7 days
+- **Protection**: API endpoints are protected from external access
 
 ## 🤝 Contributing
 

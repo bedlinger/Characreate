@@ -1,164 +1,189 @@
 <template>
   <Toast />
-  <div class="flex flex-col text-center gap-6">
-    <h2 class="text-3xl text-center italic px-48">
-      "The purpose of personas is to create reliable and realistic
-      representations of your key audience segments for reference."
-    </h2>
-    <h3 class="text-2xl font-bold">Create your persona</h3>
-    <div class="card flex justify-center">
-      <Form
-        @submit="fetchPersonaData()"
-        class="flex flex-col gap-9 w-2/3"
-        @keydown.prevent.enter
-      >
-        <div class="card flex justify-center">
-          <div class="flex flex-col w-full">
-            <FloatLabel class="w-full flex flex-col">
-              <Textarea
-                v-model="projectIdea"
-                name="projectIdea"
-                v-tooltip.right="'Describe your project idea'"
-                rows="5"
-                :maxlength="735"
-                :invalid="errorProjectIdea.isError"
-                class="w-full resize-none"
-              />
-              <label for="projectIdea">Project Idea</label>
-            </FloatLabel>
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <blockquote
+          class="text-2xl text-gray-600 italic font-light mb-6 leading-relaxed"
+        >
+          "The purpose of personas is to create reliable and realistic
+          representations of your key audience segments for reference."
+        </blockquote>
+        <h1 class="text-4xl font-bold text-gray-900">Create Your Persona</h1>
+      </div>
+      <Card v-if="usageStatus" class="mb-4">
+        <template #content>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <h3 class="text-lg font-semibold text-gray-900">Weekly Usage</h3>
+              <span
+                class="text-sm font-medium px-3 py-1 rounded-full"
+                :class="getUsageStatusClass('badge')"
+              >
+                {{ usageStatus.currentCount }}/{{ usageStatus.limit }}
+              </span>
+            </div>
+            <ProgressBar
+              :value="
+                Math.round((usageStatus.currentCount / usageStatus.limit) * 100)
+              "
+              :class="getUsageStatusClass('progress')"
+            />
+            <div class="flex justify-between text-sm">
+              <span :class="getUsageStatusClass('text')">
+                {{ usageStatus.remaining }} remaining
+              </span>
+              <span
+                v-if="usageStatus.resetTime"
+                :class="getUsageStatusClass('text')"
+              >
+                Resets:
+                {{ new Date(usageStatus.resetTime).toLocaleDateString() }}
+              </span>
+            </div>
             <Message
-              v-if="errorProjectIdea.isError"
+              v-if="usageStatus.limitReached"
               severity="error"
-              size="small"
-              variant="simple"
+              :closable="false"
             >
-              {{ errorProjectIdea.message }}
+              Weekly limit reached. Please try again next week.
+            </Message>
+            <Message
+              v-else-if="usageStatus.remaining <= 10"
+              severity="warn"
+              :closable="false"
+            >
+              Approaching weekly limit. {{ usageStatus.remaining }} generations
+              remaining.
             </Message>
           </div>
-        </div>
-        <div class="card flex justify-center">
-          <div class="flex flex-col w-full">
-            <FloatLabel class="w-full flex flex-col">
-              <Textarea
-                v-model="group"
-                name="group"
-                v-tooltip.right="'Describe your target group'"
-                rows="5"
-                :maxlength="735"
-                :invalid="errorGroup.isError"
-                class="w-full resize-none"
-              />
-              <label for="group">Target Group</label>
-            </FloatLabel>
-            <Message
-              v-if="errorGroup.isError"
-              severity="error"
-              size="small"
-              variant="simple"
-            >
-              {{ errorGroup.message }}
-            </Message>
-          </div>
-        </div>
-        <div class="flex flex-row gap-4 w-full justify-evenly">
-          <div class="card flex justify-center w-full">
-            <div class="flex flex-col w-full">
-              <FloatLabel class="w-full flex flex-col">
-                <InputNumber
-                  v-model="age"
-                  name="age"
-                  v-tooltip.right="'Enter the age of the persona'"
-                  :min="0"
-                  :max="100"
-                  showButtons
-                  :invalid="errorAge.isError"
+        </template>
+      </Card>
+      <Card>
+        <template #content>
+          <Form
+            @submit="fetchPersonaData()"
+            class="space-y-8 p-4"
+            @keydown.prevent.enter
+          >
+            <div class="form-field">
+              <FloatLabel>
+                <Textarea
+                  v-model="projectIdea"
+                  id="projectIdea"
+                  rows="4"
+                  :maxlength="735"
+                  :invalid="errorProjectIdea.isError"
                   class="w-full"
                 />
-                <label for="age">Age</label>
+                <label for="projectIdea">Project Idea</label>
               </FloatLabel>
-              <Message
-                v-if="errorAge.isError"
-                severity="error"
-                size="small"
-                variant="simple"
-              >
-                {{ errorAge.message }}
-              </Message>
+              <small v-if="errorProjectIdea.isError" class="text-red-500">
+                {{ errorProjectIdea.message }}
+              </small>
             </div>
-          </div>
-          <div class="card flex justify-center w-full">
-            <div class="flex flex-col w-full">
-              <FloatLabel class="w-full flex flex-col">
-                <Select
-                  v-model="gender"
-                  name="gender"
-                  v-tooltip.right="
-                    'Select the gender of the persona if necessary'
-                  "
-                  :options="GENDER"
-                  :invalid="errorGender.isError"
-                  class="w-full text-left"
-                />
-                <label for="gender">Gender</label>
-              </FloatLabel>
-              <Message
-                v-if="errorGender.isError"
-                severity="error"
-                size="small"
-                variant="simple"
-              >
-                {{ errorGender.message }}
-              </Message>
-            </div>
-          </div>
-        </div>
-        <div class="card flex justify-center">
-          <div class="flex flex-col w-full">
-            <FloatLabel class="w-full flex flex-col">
-              <InputGroup v-tooltip.right="'Add Goals that you want to reach'">
-                <InputText
-                  v-model="goal"
-                  name="goal"
+            <div class="form-field">
+              <FloatLabel>
+                <Textarea
+                  v-model="group"
+                  id="group"
+                  rows="4"
+                  :maxlength="735"
+                  :invalid="errorGroup.isError"
                   class="w-full"
-                  :maxlength="65"
-                  @keydown.enter="addGoal()"
-                  :invalid="errorGoals.isError"
                 />
-                <label for="goal">Goals</label>
-                <InputGroupAddon>
-                  <Button
-                    @click="addGoal()"
-                    class="w-full h-full"
-                    severity="secondary"
-                    :disabled="goals.length >= MAX_GOALS"
-                  >
-                    <Icon name="mdi:plus-circle-outline" />
-                  </Button>
-                </InputGroupAddon>
-              </InputGroup>
-            </FloatLabel>
-            <Message
-              v-if="errorGoals.isError"
-              severity="error"
-              size="small"
-              variant="simple"
-            >
-              {{ errorGoals.message }}
-            </Message>
-            <div class="flex flex-row flex-wrap gap-4 pt-2">
-              <div v-for="(goal, index) in goals" :key="goal + index">
-                <Chip :label="goal" removable @remove="removeGoal(index)" />
+                <label for="group">Target Group</label>
+              </FloatLabel>
+              <small v-if="errorGroup.isError" class="text-red-500">
+                {{ errorGroup.message }}
+              </small>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="form-field">
+                <FloatLabel>
+                  <InputNumber
+                    v-model="age"
+                    id="age"
+                    :min="MIN_AGE"
+                    :max="MAX_AGE"
+                    showButtons
+                    :invalid="errorAge.isError"
+                    class="w-full"
+                  />
+                  <label for="age">Age</label>
+                </FloatLabel>
+                <small v-if="errorAge.isError" class="text-red-500">
+                  {{ errorAge.message }}
+                </small>
+              </div>
+              <div class="form-field">
+                <FloatLabel>
+                  <Select
+                    v-model="gender"
+                    id="gender"
+                    :options="GENDER"
+                    :invalid="errorGender.isError"
+                    class="w-full"
+                  />
+                  <label for="gender">Gender</label>
+                </FloatLabel>
+                <small v-if="errorGender.isError" class="text-red-500">
+                  {{ errorGender.message }}
+                </small>
               </div>
             </div>
-          </div>
-        </div>
-        <Button
-          type="submit"
-          :loading="loading"
-          label="Create Persona"
-          class="w-1/2 self-center"
-        />
-      </Form>
+            <div class="form-field">
+              <FloatLabel>
+                <InputGroup>
+                  <InputText
+                    v-model="goal"
+                    id="goal"
+                    :maxlength="65"
+                    @keydown.enter="addGoal()"
+                    :invalid="errorGoals.isError"
+                    class="flex-1"
+                  />
+                  <label for="goal">Goals</label>
+                  <InputGroupAddon>
+                    <Button
+                      @click="addGoal()"
+                      class="w-full h-full"
+                      severity="secondary"
+                      :disabled="goals.length >= MAX_GOALS || !goal.trim()"
+                    >
+                      <Icon name="mdi:plus-circle-outline" />
+                    </Button>
+                  </InputGroupAddon>
+                </InputGroup>
+                <label for="goal"
+                  >Goals ({{ goals.length }}/{{ MAX_GOALS }})</label
+                >
+              </FloatLabel>
+              <small v-if="errorGoals.isError" class="text-red-500">
+                {{ errorGoals.message }}
+              </small>
+              <div v-if="goals.length > 0" class="flex flex-wrap gap-2 mt-3">
+                <Chip
+                  v-for="(goalItem, index) in goals"
+                  :key="index"
+                  :label="goalItem"
+                  removable
+                  @remove="removeGoal(index)"
+                />
+              </div>
+            </div>
+            <div class="flex justify-center">
+              <Button
+                type="submit"
+                :loading="loading"
+                :disabled="usageStatus?.limitReached || loading"
+                label="Create Persona"
+                size="large"
+              />
+            </div>
+          </Form>
+        </template>
+      </Card>
     </div>
   </div>
   <Dialog
@@ -166,23 +191,40 @@
     header="Your Persona"
     :modal="true"
     :draggable="false"
-    class="w-5/6"
+    class="w-7/12"
   >
-    <div class="flex flex-col gap-6">
+    <div class="space-y-6">
       <PersonaCard id="persona-card" :persona="persona" />
-      <Button
-        label="Export Persona Card"
-        class="w-1/2 self-center"
-        @click="exportPersonaCard()"
-      />
+      <div class="flex justify-center">
+        <Button
+          label="Export Persona Card"
+          icon="pi pi-download"
+          @click="exportPersonaCard()"
+          class="px-8"
+        />
+      </div>
     </div>
   </Dialog>
 </template>
 
 <script setup>
 const toast = useToast();
-const config = useRuntimeConfig();
 const loading = ref(false);
+
+const usageStatus = ref(null);
+
+const fetchUsageStatus = async () => {
+  try {
+    const response = await $fetch("/api/usage");
+    usageStatus.value = response;
+  } catch (error) {
+    console.error("Error fetching usage status:", error);
+  }
+};
+
+onMounted(() => {
+  fetchUsageStatus();
+});
 
 const projectIdea = ref(
   "An innovative app that connects young travelers with sustainable travel opportunities"
@@ -249,41 +291,6 @@ const hasError = computed(() =>
   )
 );
 
-const systemPrompt = `
-    You are an AI system tasked with generating detailed personas based on user input. A persona is a fictional representation of a target user group designed to facilitate empathy and understanding for product design and usability testing.
-    Follow these guidelines:
-    - Accept input for Project Idea, Target Group, Age, Gender, and Goals.
-    - Generate a persona with details: Name, Age, Gender, Location, Occupation, Biography, Hobbies and Interests, Technical Experience, Goals, Motivation, and Challenges.
-    - Provide the response in the following JSON format:
-    {
-      "persona": {
-        "name": "String",
-        "age": Integer,
-        "gender": "String",
-        "location": "String",
-        "occupation": "String",
-        "biography": "String",
-        "hobbies_and_interests": ["String"],
-        "technical_experience": "String",
-        "goals": ["String"],
-        "motivation": "String",
-        "challenges": ["String"]
-      }
-    }
-    Ensure the response adheres strictly to this format and includes all fields.
-  `;
-const userPrompt = computed(() => {
-  return `
-    Generate a persona for the following:
-    - Project Idea: ${projectIdea.value}
-    - Target Group: ${group.value}
-    - Age: ${age.value}
-    - Gender: ${gender.value}
-    - Goals: ${JSON.stringify(goals.value)}
-    Respond in JSON format as specified.
-  `;
-});
-
 const persona = ref(null);
 const showPersonaCard = ref(false);
 const fetchPersonaData = async () => {
@@ -297,61 +304,78 @@ const fetchPersonaData = async () => {
     return;
   }
 
-  const response = await $fetch(config.public.apiUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${config.public.apiKey}`,
-    },
-    body: {
-      model: "Qwen/Qwen2.5-72B-Instruct",
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt.trim(),
-        },
-        {
-          role: "user",
-          content: userPrompt.value.trim(),
-        },
-      ],
-      response_format: { type: "json_object" },
-    },
-    async onRequest({ request, options }) {
-      // console.log("[fetch request]", request, options);
-      loading.value = true;
-    },
-    async onRequestError({ request, options, error }) {
-      // console.log("[fetch request error]", request, error);
+  try {
+    loading.value = true;
+    console.log({
+        projectIdea: projectIdea.value,
+        group: group.value,
+        age: age.value,
+        gender: gender.value,
+        goals: goals.value,
+      })
+    const response = await $fetch("/api/generate", {
+      method: "POST",
+      body: {
+        projectIdea: projectIdea.value,
+        group: group.value,
+        age: age.value,
+        gender: gender.value,
+        goals: goals.value,
+      },
+    });
+
+    if (response.success) {
+      persona.value = response.persona;
+      showPersonaCard.value = true;
+
+      usageStatus.value = {
+        currentCount: response.usage.currentCount,
+        limit: response.usage.limit,
+        remaining: response.usage.remaining,
+        resetTime: usageStatus.value?.resetTime,
+      };
+
+      toast.add({
+        severity: "success",
+        summary: "Persona Generated",
+        detail: `Generated successfully! ${response.usage.remaining} generations remaining this week.`,
+        life: 3000,
+      });
+    } else {
+      throw new Error("Failed to generate persona");
+    }
+  } catch (error) {
+    console.error("Error generating persona:", error);
+
+    if (error.statusCode === 429) {
+      toast.add({
+        severity: "warn",
+        summary: "Weekly Limit Reached",
+        detail:
+          error.statusMessage ||
+          "Weekly persona generation limit reached. Please try again next week.",
+        life: 5000,
+      });
+    } else if (error.statusCode === 400) {
+      toast.add({
+        severity: "error",
+        summary: "Invalid Data",
+        detail: "Please check your input and try again.",
+        life: 3000,
+      });
+    } else {
       toast.add({
         severity: "error",
         summary: "Error",
-        detail: "Failed to generate persona! Please try again.",
+        detail:
+          error.statusMessage ||
+          "Failed to generate persona! Please try again.",
         life: 3000,
       });
-      loading.value = false;
-      return;
-    },
-    async onResponse({ request, response, options }) {
-      // console.log("[fetch response]", request, response.status, response.body);
-      if (response.status !== 200) {
-        toast.add({
-          severity: "error",
-          summary: "Error",
-          detail: `Failed to generate persona with an response status of ${response.status}! Please try again.`,
-          life: 3000,
-        });
-        loading.value = false;
-        return;
-      }
-      loading.value = false;
-    },
-  });
-
-  const personaAsString = response.choices[0].message.content;
-  persona.value = JSON.parse(personaAsString).persona;
-  persona.value.profile_image = `https://robohash.org/${persona.value.name}?set=set3`;
-  showPersonaCard.value = true;
+    }
+  } finally {
+    loading.value = false;
+  }
 };
 
 const { $htmlToImage } = useNuxtApp();
@@ -368,4 +392,38 @@ const exportPersonaCard = () => {
   showPersonaCard.value = false;
   persona.value = null;
 };
+
+const getUsageStatusClass = (type) => {
+  if (!usageStatus.value) return "";
+
+  const isLimitReached = usageStatus.value.limitReached;
+  const isLowRemaining = usageStatus.value.remaining <= 10 && !isLimitReached;
+  const isNormal = usageStatus.value.remaining > 10;
+
+  const classes = {
+    badge: {
+      "bg-red-100 text-red-800": isLimitReached,
+      "bg-yellow-100 text-yellow-800": isLowRemaining,
+      "bg-blue-100 text-blue-800": isNormal,
+    },
+    progress: {
+      "text-red-500": isLimitReached,
+      "text-yellow-500": isLowRemaining,
+      "text-blue-500": isNormal,
+    },
+    text: {
+      "text-red-600": isLimitReached,
+      "text-yellow-600": isLowRemaining,
+      "text-blue-600": isNormal,
+    },
+  };
+
+  return classes[type];
+};
 </script>
+
+<style scoped>
+.form-field {
+  @apply space-y-2;
+}
+</style>

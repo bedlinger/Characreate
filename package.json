@@ -17,7 +17,8 @@
     "nuxt": "^3.14.1592",
     "primevue": "^4.2.4",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "zod": "^3.25.28"
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",

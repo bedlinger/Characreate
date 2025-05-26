@@ -15,7 +15,7 @@
           <img
             :src="persona.profile_image"
             alt="Profile Picture"
-            class="object-cover w-full h-56"
+            class="object-cover w-full"
           />
         </div>
         <div id="motivation" class="persona-info">
