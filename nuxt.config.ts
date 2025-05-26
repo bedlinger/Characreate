@@ -43,7 +43,7 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.API_URL,
       apiKey: process.env.API_KEY,
-    }
+    },
   },
   css: ["~/assets/css/main.css"],
   postcss: {
@@ -63,5 +63,14 @@ export default defineNuxtConfig({
       },
     },
     autoImport: true,
+  },
+  app: {
+    head: {
+      title: "Characreate",
+      htmlAttrs: {
+        lang: "en",
+      },
+      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    },
   },
 });
