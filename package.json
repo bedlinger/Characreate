@@ -20,6 +20,7 @@
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@iconify-json/mdi": "^1.2.3",
     "@primevue/nuxt-module": "^4.2.4",
     "tailwindcss": "^3.4.16"
   }
