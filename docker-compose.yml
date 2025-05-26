@@ -1,0 +1,42 @@
+services:
+  app:
+    container_name: "characreate"
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      VIRTUAL_HOST: "characreate.bedlinger.at"
+      LETSENCRYPT_HOST: "characreate.bedlinger.at"
+      VIRTUAL_PORT: "3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=${API_URL}
+      - API_KEY=${API_KEY}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - REDIS_DB=${REDIS_DB:-0}
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - "web"
+
+  redis:
+    container_name: "characreate-redis"
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes ${REDIS_PASSWORD:+--requirepass $REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - "web"
+
+volumes:
+  redis_data:
+
+networks:
+  web:
+    external: true
