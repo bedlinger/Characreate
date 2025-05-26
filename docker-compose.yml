@@ -5,10 +5,9 @@ services:
     ports:
       - "3000:3000"
     environment:
-      VIRTUAL_HOST: "characreate.bedlinger.at"
-      LETSENCRYPT_HOST: "characreate.bedlinger.at"
-      VIRTUAL_PORT: "3000"
-    environment:
+      - VIRTUAL_HOST=characreate.bedlinger.at
+      - LETSENCRYPT_HOST=characreate.bedlinger.at
+      - VIRTUAL_PORT=3000
       - NODE_ENV=production
       - API_URL=${API_URL}
       - API_KEY=${API_KEY}
