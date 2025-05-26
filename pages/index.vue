@@ -1,5 +1,7 @@
 <template>
-  <Toast />
+  <ClientOnly>
+    <Toast />
+  </ClientOnly>
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-4xl mx-auto px-6">
       <div class="text-center mb-12">
@@ -11,54 +13,60 @@
         </blockquote>
         <h1 class="text-4xl font-bold text-gray-900">Create Your Persona</h1>
       </div>
-      <Card v-if="usageStatus" class="mb-4">
-        <template #content>
-          <div class="space-y-4">
-            <div class="flex justify-between items-center">
-              <h3 class="text-lg font-semibold text-gray-900">Weekly Usage</h3>
-              <span
-                class="text-sm font-medium px-3 py-1 rounded-full"
-                :class="getUsageStatusClass('badge')"
+      <ClientOnly>
+        <Card v-if="usageStatus" class="mb-4">
+          <template #content>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900">
+                  Weekly Usage
+                </h3>
+                <span
+                  class="text-sm font-medium px-3 py-1 rounded-full"
+                  :class="getUsageStatusClass('badge')"
+                >
+                  {{ usageStatus.currentCount }}/{{ usageStatus.limit }}
+                </span>
+              </div>
+              <ProgressBar
+                :value="
+                  Math.round(
+                    (usageStatus.currentCount / usageStatus.limit) * 100
+                  )
+                "
+                :class="getUsageStatusClass('progress')"
+              />
+              <div class="flex justify-between text-sm">
+                <span :class="getUsageStatusClass('text')">
+                  {{ usageStatus.remaining }} remaining
+                </span>
+                <span
+                  v-if="usageStatus.resetTime"
+                  :class="getUsageStatusClass('text')"
+                >
+                  Resets:
+                  {{ new Date(usageStatus.resetTime).toLocaleDateString() }}
+                </span>
+              </div>
+              <Message
+                v-if="usageStatus.limitReached"
+                severity="error"
+                :closable="false"
               >
-                {{ usageStatus.currentCount }}/{{ usageStatus.limit }}
-              </span>
-            </div>
-            <ProgressBar
-              :value="
-                Math.round((usageStatus.currentCount / usageStatus.limit) * 100)
-              "
-              :class="getUsageStatusClass('progress')"
-            />
-            <div class="flex justify-between text-sm">
-              <span :class="getUsageStatusClass('text')">
-                {{ usageStatus.remaining }} remaining
-              </span>
-              <span
-                v-if="usageStatus.resetTime"
-                :class="getUsageStatusClass('text')"
+                Weekly limit reached. Please try again next week.
+              </Message>
+              <Message
+                v-else-if="usageStatus.remaining <= 10"
+                severity="warn"
+                :closable="false"
               >
-                Resets:
-                {{ new Date(usageStatus.resetTime).toLocaleDateString() }}
-              </span>
+                Approaching weekly limit.
+                {{ usageStatus.remaining }} generations remaining.
+              </Message>
             </div>
-            <Message
-              v-if="usageStatus.limitReached"
-              severity="error"
-              :closable="false"
-            >
-              Weekly limit reached. Please try again next week.
-            </Message>
-            <Message
-              v-else-if="usageStatus.remaining <= 10"
-              severity="warn"
-              :closable="false"
-            >
-              Approaching weekly limit. {{ usageStatus.remaining }} generations
-              remaining.
-            </Message>
-          </div>
-        </template>
-      </Card>
+          </template>
+        </Card>
+      </ClientOnly>
       <Card>
         <template #content>
           <Form
@@ -224,6 +232,8 @@ const fetchUsageStatus = async () => {
 
 onMounted(() => {
   fetchUsageStatus();
+  age.value = Math.floor(Math.random() * (35 - 18 + 1)) + 18;
+  gender.value = GENDER.value[Math.floor(Math.random() * GENDER.value.length)];
 });
 
 const projectIdea = ref(
@@ -244,7 +254,7 @@ const errorGroup = computed(() => ({
 
 const MIN_AGE = 14;
 const MAX_AGE = 100;
-const age = ref(Math.floor(Math.random() * (35 - 18 + 1)) + 18);
+const age = ref(25);
 const errorAge = computed(() => ({
   isError: !age.value || age.value < MIN_AGE || age.value > MAX_AGE,
   message:
@@ -254,9 +264,7 @@ const errorAge = computed(() => ({
 }));
 
 const GENDER = ref(["not necessary", "male", "female", "other"]);
-const gender = ref(
-  GENDER.value[Math.floor(Math.random() * GENDER.value.length)]
-);
+const gender = ref("not necessary");
 const errorGender = computed(() => ({
   isError: !gender.value,
   message: "Gender is required",
@@ -306,13 +314,6 @@ const fetchPersonaData = async () => {
 
   try {
     loading.value = true;
-    console.log({
-        projectIdea: projectIdea.value,
-        group: group.value,
-        age: age.value,
-        gender: gender.value,
-        goals: goals.value,
-      })
     const response = await $fetch("/api/generate", {
       method: "POST",
       body: {
@@ -422,8 +423,10 @@ const getUsageStatusClass = (type) => {
 };
 </script>
 
-<style scoped>
+<style>
 .form-field {
-  @apply space-y-2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 </style>
