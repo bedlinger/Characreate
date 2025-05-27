@@ -1,4 +1,5 @@
-import { WEEKLY_LIMIT, REDIS_KEY } from "../constants";
+import { WEEKLY_LIMIT, STORAGE_KEY } from "../constants";
+import { checkAndResetCounter } from "../utils/storage";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,10 +13,10 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const storage = useStorage("redis");
+    const storage = useStorage("fs");
 
-    const currentCount = Number((await storage.getItem(REDIS_KEY)) || 0);
-    const resetTime = await storage.getItem(`${REDIS_KEY}_reset`);
+    const currentCount = await checkAndResetCounter(storage);
+    const resetTime = await storage.getItem(`${STORAGE_KEY}_reset`);
 
     return {
       currentCount,

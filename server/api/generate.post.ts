@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { WEEKLY_LIMIT, REDIS_KEY, WEEK_IN_SECONDS } from "../constants";
+import { WEEKLY_LIMIT, STORAGE_KEY, WEEK_IN_SECONDS } from "../constants";
+import { checkAndResetCounter } from "../utils/storage";
 
 const PersonaGenerationSchema = z.object({
   projectIdea: z.string().min(1, "Project idea is required"),
@@ -24,9 +25,9 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const validatedData = PersonaGenerationSchema.parse(body);
 
-    const storage = useStorage("redis");
+    const storage = useStorage("fs");
 
-    const currentCount = Number((await storage.getItem(REDIS_KEY)) || 0);
+    const currentCount = await checkAndResetCounter(storage);
 
     if (currentCount >= WEEKLY_LIMIT) {
       throw createError({
@@ -36,7 +37,7 @@ export default defineEventHandler(async (event) => {
         data: {
           currentCount,
           limit: WEEKLY_LIMIT,
-          resetTime: await storage.getItem(`${REDIS_KEY}_reset`),
+          resetTime: await storage.getItem(`${STORAGE_KEY}_reset`),
         },
       });
     }
@@ -132,20 +133,7 @@ export default defineEventHandler(async (event) => {
 
     const newCount = currentCount + 1;
 
-    const resetTime = new Date(Date.now() + WEEK_IN_SECONDS * 1000);
-
-    try {
-      await storage.setItem(REDIS_KEY, newCount, { ttl: WEEK_IN_SECONDS });
-      await storage.setItem(`${REDIS_KEY}_reset`, resetTime.toISOString(), {
-        ttl: WEEK_IN_SECONDS,
-      });
-    } catch (e) {
-      console.warn(
-        "TTL not supported for storage driver, falling back to manual expiration"
-      );
-      await storage.setItem(REDIS_KEY, newCount);
-      await storage.setItem(`${REDIS_KEY}_reset`, resetTime.toISOString());
-    }
+    await storage.setItem(STORAGE_KEY, newCount);
 
     return {
       success: true,

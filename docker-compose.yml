@@ -8,40 +8,16 @@ services:
       - VIRTUAL_HOST=characreate.bedlinger.at
       - LETSENCRYPT_HOST=characreate.bedlinger.at
       - VIRTUAL_PORT=3000
+      - API_URL=${API_URL}
       - API_KEY=${API_KEY}
-      - REDIS_HOST=${REDIS_HOST:-redis}
-      - REDIS_PORT=${REDIS_PORT:-6379}
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
-      - REDIS_DB=${REDIS_DB:-0}
-    depends_on:
-      - redis
-    restart: unless-stopped
-    networks:
-      - "web"
-
-  redis:
-    container_name: "characreate-redis"
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    command: >
-      sh -c "
-      if [ -n \"$$REDIS_PASSWORD\" ]; then
-        redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\"
-      else
-        redis-server --appendonly yes
-      fi
-      "
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
     volumes:
-      - redis_data:/data
+      - characreate_data:/app/.data
     restart: unless-stopped
     networks:
       - "web"
 
 volumes:
-  redis_data:
+  characreate_data:
 
 networks:
   web:

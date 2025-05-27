@@ -22,7 +22,6 @@ Characreate is a simple yet powerful persona generator built as a school project
 
 - 🤖 **AI-Powered Generation**: Utilizes Qwen2.5-72B-Instruct model via the deepinfra API to create detailed personas
 - 🔒 **Server-Side Processing**: Secure API calls with rate limiting with automatic reset and protection from external access
-- 📊 **Usage Tracking**: Real-time display of weekly generation quota with Redis-backed persistence
 - 🎨 **Custom Personas**: Define project ideas, target groups, demographics, and goals
 - 📊 **Rich Persona Details**: Generate comprehensive profiles including:
   - Demographics (name, age, gender, location)
@@ -98,7 +97,6 @@ docker run --name redis-characreate -p 6379:6379 -d redis
 The application includes a built-in weekly rate limit for persona generation:
 
 - **Default Limit**: 20 personas per week
-- **Storage**: Uses Redis for persistent counter storage
 - **Reset**: Automatically resets every 7 days
 - **Protection**: API endpoints are protected from external access
 
