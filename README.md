@@ -49,6 +49,8 @@ Characreate is a simple yet powerful persona generator built as a school project
 
 - Node.js (v16 or higher)
 - NPM or another package manager (Yarn, PNPM, Bun)
+- Redis server (for rate limiting and usage tracking)
+- Deepinfra API key (for AI persona generation)
 
 ### Environment Variables
 
@@ -58,10 +60,10 @@ Create a `.env` file in the root directory with the following variables:
 API_URL=<deppinfra-api-endpoint>
 API_KEY=<deepinfra-api-key>
 
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_PASSWORD=
-REDIS_DB=0
+REDIS_HOST=<redis-host>
+REDIS_PORT=<redis-port>
+REDIS_PASSWORD=<optional-redis-password>
+REDIS_DB=<redis-database-number>
 ```
 
 ### Installation
@@ -78,6 +80,9 @@ npm run build
 
 # Locally preview production build
 npm run preview
+
+# Create a Redis database in a Docker container
+docker run --name redis-characreate -p 6379:6379 -d redis
 ```
 
 ## 🖥️ How It Works
