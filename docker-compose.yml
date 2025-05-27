@@ -8,11 +8,9 @@ services:
       - VIRTUAL_HOST=characreate.bedlinger.at
       - LETSENCRYPT_HOST=characreate.bedlinger.at
       - VIRTUAL_PORT=3000
-      - NODE_ENV=production
-      - API_URL=${API_URL}
       - API_KEY=${API_KEY}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
       - REDIS_DB=${REDIS_DB:-0}
     depends_on:
