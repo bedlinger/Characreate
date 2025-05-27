@@ -131,16 +131,20 @@ export default defineEventHandler(async (event) => {
     personaData.persona.profile_image = `https://robohash.org/${personaData.persona.name}?set=set3`;
 
     const newCount = currentCount + 1;
-    await storage.setItem(REDIS_KEY, newCount);
 
-    if (currentCount === 0) {
-      const resetTime = new Date(Date.now() + WEEK_IN_SECONDS * 1000);
+    const resetTime = new Date(Date.now() + WEEK_IN_SECONDS * 1000);
+
+    try {
+      await storage.setItem(REDIS_KEY, newCount, { ttl: WEEK_IN_SECONDS });
+      await storage.setItem(`${REDIS_KEY}_reset`, resetTime.toISOString(), {
+        ttl: WEEK_IN_SECONDS,
+      });
+    } catch (e) {
+      console.warn(
+        "TTL not supported for storage driver, falling back to manual expiration"
+      );
+      await storage.setItem(REDIS_KEY, newCount);
       await storage.setItem(`${REDIS_KEY}_reset`, resetTime.toISOString());
-      try {
-        await storage.setItem(REDIS_KEY, newCount, { ttl: WEEK_IN_SECONDS });
-      } catch (e) {
-        console.warn("TTL not supported for storage driver");
-      }
     }
 
     return {
