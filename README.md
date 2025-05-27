@@ -4,7 +4,7 @@
   <img src="/public/img/logo.webp" alt="Characreate Logo" width="150">
   <h3>A Simple Persona Generator</h3>
   <p>Create realistic user personas for your projects with AI-powered insights</p>
-  
+
   [![Vue.js](https://img.shields.io/badge/Vue.js-85%25-4FC08D?style=flat-square&logo=vue.js&logoColor=white)](https://vuejs.org/)
   [![JavaScript](https://img.shields.io/badge/JavaScript-5.2%25-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
   [![Nuxt.js](https://img.shields.io/badge/Nuxt.js-3-00DC82?style=flat-square&logo=nuxt.js&logoColor=white)](https://nuxt.com/)
@@ -58,11 +58,6 @@ Create a `.env` file in the root directory with the following variables:
 ```
 API_URL=<deppinfra-api-endpoint>
 API_KEY=<deepinfra-api-key>
-
-REDIS_HOST=<redis-host>
-REDIS_PORT=<redis-port>
-REDIS_PASSWORD=<optional-redis-password>
-REDIS_DB=<redis-database-number>
 ```
 
 ### Installation
@@ -79,9 +74,6 @@ npm run build
 
 # Locally preview production build
 npm run preview
-
-# Create a Redis database in a Docker container
-docker run --name redis-characreate -p 6379:6379 -d redis
 ```
 
 ## 🖥️ How It Works
