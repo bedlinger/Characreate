@@ -48,7 +48,6 @@ Characreate is a simple yet powerful persona generator built as a school project
 
 - Node.js (v16 or higher)
 - NPM or another package manager (Yarn, PNPM, Bun)
-- Redis server (for rate limiting and usage tracking)
 - Deepinfra API key (for AI persona generation)
 
 ### Environment Variables
